@@ -34,48 +34,48 @@ struct ContentView: View {
                 )
                 .ignoresSafeArea()
                 VStack {
-                    Image(.record)
-                        .resizable()
-                        .scaledToFit()
-                        .rotationEffect(.degrees(rotation))
-                        .onReceive(timer) { _ in
-                            if isRotating {
-                                rotation += 1.0
-                                if rotation >= 360 { rotation -= 360 }
-                            }
-                        }
-                    
-                    Image(isShowingBackground ? .background : .kitty )
-                        .resizable()
-                        .scaledToFit()
-                    
-                    Button("Play that lovely music") {
+                    Button {
                         isRotating = true
                         audioManager.playSound(soundName: "Fade", fileType: ".m4a")
                         withAnimation(.linear(duration: 2.0)) {
                             isShowingText.toggle()
                             isShowingBackground.toggle()
                         }
+                    } label: {
+                        Image(.record)
+                            .resizable()
+                            .scaledToFit()
+                            .rotationEffect(.degrees(rotation))
+                            .onReceive(timer) { _ in
+                                if isRotating {
+                                    rotation += 1.5
+                                    if rotation >= 360 { rotation -= 360 }
+                                }
+                            }
+                    } .disabled(isRotating == true)
+                    withAnimation(.easeIn(duration: 1)) {
+                        Image(isShowingBackground ? .background : .kitty )
+                            .resizable()
+                            .scaledToFit()
+                    }
+                    Button("Pause") {
+                        withAnimation(.easeIn(duration: 1)) {
+                            isRotating = false
+                            audioManager.pauseSound()
+                            isShowingText.toggle()
+                            isShowingBackground.toggle()
+                        }
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.black)
-                    
-                    withAnimation(.easeIn(duration: 1)) {
-                        Text(isShowingText ? "will you ALSO be MY valentine 🥺" : "")
-                            .font(.title)
-                            .foregroundStyle(.white)
-                    }
-                    
-                    Button("Pause") {
-                        isRotating = false
-                        audioManager.pauseSound()
-                        isShowingText.toggle()
-                        isShowingBackground.toggle()
-                    }
+                    .disabled(isRotating ? false : true)
+                    .opacity(isRotating ? 1 : 0)
+                    .padding()
                 }
-                .padding()
+               
             }
             .navigationTitle("What is this???")
+            
         }
     }
 }
