@@ -11,28 +11,27 @@ import Combine
 
 @Observable
 class AudioPlayerManager {
+     var AudioFiles: [AudioFile] = [
+       AudioFile(fileName: "Fade")
+      ]
+    
     var audioPlayer: AVAudioPlayer?
     var isPlaying: Bool = false
     
-    func playSound(soundName: String, fileType: String) {
-        guard let url = Bundle.main.url(forResource: soundName, withExtension: fileType) else {
-            print("Audio file not found: \(soundName).\(fileType)")
-            return
-        }
-        
-        do {
-            // Set the audio session category to allow playback
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default)
-            try AVAudioSession.sharedInstance().setActive(true)
-            
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-            audioPlayer?.prepareToPlay()
-            audioPlayer?.play()
-            isPlaying = true
-        } catch {
-            print("Error playing sound: \(error.localizedDescription)")
-        }
-    }
+    func playAudio(track: AudioFile) {
+           guard let url = track.url else {
+               print("Error: Audio file not found for \(track.fileName)")
+               return
+           }
+
+           do {
+               audioPlayer = try AVAudioPlayer(contentsOf: url)
+               audioPlayer?.play()
+               self.isPlaying = true
+           } catch {
+               print("Error playing audio: \(error.localizedDescription)")
+           }
+       }
     
     func stopSound() {
         audioPlayer?.stop()

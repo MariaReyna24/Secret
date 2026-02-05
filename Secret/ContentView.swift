@@ -15,7 +15,8 @@ struct ContentView: View {
     @State var scale = 1.0
     @State var isShowingBackground = false
     @State var isRotating = false
-    var audioManager = AudioPlayerManager()
+    @State var song: AudioFile
+    @State var audioManager = AudioPlayerManager()
 
     // Timer for driving the rotation animation
     let timer = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common).autoconnect()
@@ -36,7 +37,7 @@ struct ContentView: View {
                 VStack {
                     Button {
                         isRotating = true
-                        audioManager.playSound(soundName: "Fade", fileType: ".m4a")
+                        audioManager.playAudio(track: song)
                         withAnimation(.linear(duration: 2.0)) {
                             isShowingText.toggle()
                             isShowingBackground.toggle()
@@ -52,7 +53,8 @@ struct ContentView: View {
                                     if rotation >= 360 { rotation -= 360 }
                                 }
                             }
-                    } .disabled(isRotating == true)
+                    }
+                    .disabled(isRotating == true)
                     withAnimation(.easeIn(duration: 1)) {
                         Image(isShowingBackground ? .background : .kitty )
                             .resizable()
@@ -81,5 +83,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(song: AudioFile(fileName: "fade"))
 }
