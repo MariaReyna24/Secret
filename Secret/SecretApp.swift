@@ -12,7 +12,7 @@ struct SecretApp: App {
     @State private var song = AudioFile(fileName: "fade")
     var body: some Scene {
         WindowGroup {
-            ContentView(song: song)
+            SelectMusic(song: $song)
         }
     }
 }

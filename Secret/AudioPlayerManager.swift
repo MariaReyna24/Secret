@@ -12,7 +12,8 @@ import Combine
 @Observable
 class AudioPlayerManager {
      var AudioFiles: [AudioFile] = [
-       AudioFile(fileName: "Fade")
+       AudioFile(fileName: "Fade"),
+       AudioFile(fileName: "KissMe")
       ]
     
     var audioPlayer: AVAudioPlayer?

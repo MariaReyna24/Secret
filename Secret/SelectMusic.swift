@@ -8,19 +8,26 @@
 import SwiftUI
 
 struct SelectMusic: View {
+    @State private var showDetails = false
     @Binding var song: AudioFile
     @State var audioManager = AudioPlayerManager()
     var body: some View {
-        VStack {
-            Picker("Select a song", selection: $song) {
-                ForEach(audioManager.AudioFiles) { file in
-                    Text("\(file.fileName)")
+        NavigationStack {
+            VStack {
+                List {
+                    ForEach(audioManager.AudioFiles) { file in
+                        Button{
+                            showDetails.toggle()
+                        } label: {
+                            Text(file.fileName)
+                        }
+                    } .navigationDestination(isPresented: $showDetails) {
+                        ContentView(song: song)
+                        
+                    }
+                    
                 }
             }
-            //.pickerStyle(.navigationLink)
-                //.pickerStyle(.navigationLink)
-
-            
         }
     }
 }
