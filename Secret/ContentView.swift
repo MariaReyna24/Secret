@@ -35,11 +35,20 @@ struct ContentView: View {
                 .ignoresSafeArea()
                 VStack {
                     Button {
-                        isRotating = true
-                        audioManager.playSound(soundName: "Fade", fileType: ".m4a")
-                        withAnimation(.linear(duration: 2.0)) {
-                            isShowingText.toggle()
-                            isShowingBackground.toggle()
+                        if isRotating == false {
+                            isRotating = true
+                            audioManager.playSound(soundName: "Fade", fileType: ".m4a")
+                            withAnimation(.linear(duration: 2.0)) {
+                                isShowingText.toggle()
+                                isShowingBackground.toggle()
+                            }
+                        } else if isRotating == true {
+                            withAnimation(.easeIn(duration: 1)) {
+                                isRotating = false
+                                audioManager.pauseSound()
+                                isShowingText.toggle()
+                                isShowingBackground.toggle()
+                            }
                         }
                     } label: {
                         Image(.record)
@@ -52,25 +61,12 @@ struct ContentView: View {
                                     if rotation >= 360 { rotation -= 360 }
                                 }
                             }
-                    } .disabled(isRotating == true)
+                    }
                     withAnimation(.easeIn(duration: 1)) {
                         Image(isShowingBackground ? .background : .kitty )
                             .resizable()
                             .scaledToFit()
                     }
-                    Button("Pause") {
-                        withAnimation(.easeIn(duration: 1)) {
-                            isRotating = false
-                            audioManager.pauseSound()
-                            isShowingText.toggle()
-                            isShowingBackground.toggle()
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.black)
-                    .disabled(isRotating ? false : true)
-                    .opacity(isRotating ? 1 : 0)
-                    .padding()
                 }
                
             }
