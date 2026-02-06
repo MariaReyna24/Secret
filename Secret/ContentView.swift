@@ -15,8 +15,7 @@ struct ContentView: View {
     @State var scale = 1.0
     @State var isShowingBackground = false
     @State var isRotating = false
-    @State var song: AudioFile
-    @State var audioManager = AudioPlayerManager()
+    var audioManager = AudioPlayerManager()
 
     // Timer for driving the rotation animation
     let timer = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common).autoconnect()
@@ -36,11 +35,20 @@ struct ContentView: View {
                 .ignoresSafeArea()
                 VStack {
                     Button {
-                        isRotating = true
-                        audioManager.playAudio(track: song)
-                        withAnimation(.linear(duration: 2.0)) {
-                            isShowingText.toggle()
-                            isShowingBackground.toggle()
+                        if isRotating == false {
+                            isRotating = true
+                            audioManager.playSound(soundName: "Fade", fileType: ".m4a")
+                            withAnimation(.linear(duration: 2.0)) {
+                                isShowingText.toggle()
+                                isShowingBackground.toggle()
+                            }
+                        } else if isRotating == true {
+                            withAnimation(.easeIn(duration: 1)) {
+                                isRotating = false
+                                audioManager.pauseSound()
+                                isShowingText.toggle()
+                                isShowingBackground.toggle()
+                            }
                         }
                     } label: {
                         Image(.record)
@@ -54,25 +62,11 @@ struct ContentView: View {
                                 }
                             }
                     }
-                    .disabled(isRotating == true)
                     withAnimation(.easeIn(duration: 1)) {
                         Image(isShowingBackground ? .background : .kitty )
                             .resizable()
                             .scaledToFit()
                     }
-                    Button("Pause") {
-                        withAnimation(.easeIn(duration: 1)) {
-                            isRotating = false
-                            audioManager.pauseSound()
-                            isShowingText.toggle()
-                            isShowingBackground.toggle()
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.black)
-                    .disabled(isRotating ? false : true)
-                    .opacity(isRotating ? 1 : 0)
-                    .padding()
                 }
                
             }
@@ -83,5 +77,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(song: AudioFile(fileName: "fade"))
+    ContentView()
 }
