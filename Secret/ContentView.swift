@@ -15,7 +15,7 @@ struct ContentView: View {
     @State var scale = 1.0
     @State var isShowingBackground = false
     @State var isRotating = false
-    var audioManager = AudioPlayerManager()
+    @State var audioManager: AudioPlayerManager
 
     // Timer for driving the rotation animation
     let timer = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common).autoconnect()
@@ -37,7 +37,7 @@ struct ContentView: View {
                     Button {
                         if isRotating == false {
                             isRotating = true
-                            audioManager.playSound(soundName: "Fade", fileType: ".m4a")
+                            audioManager.playAudio(track: audioManager.currentSong)
                             withAnimation(.linear(duration: 2.0)) {
                                 isShowingText.toggle()
                                 isShowingBackground.toggle()
@@ -77,5 +77,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(audioManager: AudioPlayerManager())
 }

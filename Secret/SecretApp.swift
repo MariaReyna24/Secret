@@ -9,10 +9,10 @@ import SwiftUI
 
 @main
 struct SecretApp: App {
-    @State private var song = AudioFile(fileName: "fade")
+    @State var audioManager = AudioPlayerManager()
     var body: some Scene {
         WindowGroup {
-            SelectMusic(song: $song)
+            SelectMusic(audioManager: audioManager)
         }
     }
 }

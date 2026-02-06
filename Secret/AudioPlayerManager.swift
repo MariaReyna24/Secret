@@ -15,7 +15,7 @@ class AudioPlayerManager {
        AudioFile(fileName: "Fade"),
        AudioFile(fileName: "KissMe")
       ]
-    
+    var currentSong = AudioFile(fileName: "Fade")
     var audioPlayer: AVAudioPlayer?
     var isPlaying: Bool = false
     
