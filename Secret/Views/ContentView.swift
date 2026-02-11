@@ -32,7 +32,7 @@ struct ContentView: View {
             .ignoresSafeArea()
             VStack {
                 Text("Happy Valentine's Day ❤️")
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.cream)
                     .font(.title)
                     .padding(20)
                 Button {

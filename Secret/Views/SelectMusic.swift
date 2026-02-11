@@ -21,6 +21,11 @@ struct SelectMusic: View {
             .edgesIgnoringSafeArea(.all)
             VStack {
                 Text("Pick a song")
+                    .font(.largeTitle)
+                    .padding(.top, 30)
+                    .foregroundStyle(.cream)
+                Text("(theres only 3 srry)")
+                    .foregroundStyle(.cream)
                 List {
                     ForEach(audioManager.AudioFiles) { file in
                         Button{

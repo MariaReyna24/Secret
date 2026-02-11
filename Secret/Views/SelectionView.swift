@@ -20,6 +20,7 @@ struct SelectionView: View {
             .edgesIgnoringSafeArea(.all)
             VStack{
                 Text("What your vibe?")
+                    .foregroundStyle(.cream)
                     .font(.title)
                     .bold()
                     .padding(.bottom, 100)
