@@ -9,9 +9,10 @@ import SwiftUI
 
 @main
 struct SecretApp: App {
+    @State var audioManager = AudioPlayerManager()
     var body: some Scene {
         WindowGroup {
-            ContentView()
+           NavigationRootView(audioManager: audioManager)
         }
     }
 }
