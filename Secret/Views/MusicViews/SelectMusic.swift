@@ -34,14 +34,16 @@ struct SelectMusic: View {
                         } label: {
                             HStack{
                                 Text(file.songTitle)
-                                    .foregroundStyle(.black)
+                                 
                                 Spacer()
                                 Image(systemName: "arrow.forward")
-                                    .foregroundStyle(.black)
+                                  
                             }
-                        }
+                        }.foregroundStyle(.white)
                     }
-                }.scrollContentBackground(.hidden)
+                }
+                .scrollContentBackground(.hidden)
+                
             }
         }
     }
