@@ -12,7 +12,7 @@ struct SecretApp: App {
     @State var audioManager = AudioPlayerManager()
     var body: some Scene {
         WindowGroup {
-            SelectMusic(audioManager: audioManager)
+           NavigationRootView(audioManager: audioManager)
         }
     }
 }
