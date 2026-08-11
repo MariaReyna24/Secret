@@ -41,9 +41,9 @@ struct SelectionView: View {
                     GifImageView("standingKitty")
                         .frame(width: 190, height: 270)
                     Button {
-                        
+                        router.navigateTo(route: .memoryView)
                     } label: {
-                        Text("Coming Soon")
+                        Text("Memory View")
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(.black)

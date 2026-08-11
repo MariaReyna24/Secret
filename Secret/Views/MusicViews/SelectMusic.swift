@@ -29,19 +29,21 @@ struct SelectMusic: View {
                 List {
                     ForEach(audioManager.AudioFiles) { file in
                         Button{
-                            router.navigateTo(route: .mainView)
                             audioManager.currentSong = file
+                            router.navigateTo(route: .mainView)
                         } label: {
                             HStack{
                                 Text(file.songTitle)
-                                    .foregroundStyle(.black)
+                                 
                                 Spacer()
                                 Image(systemName: "arrow.forward")
-                                    .foregroundStyle(.black)
+                                  
                             }
-                        }
+                        }.foregroundStyle(.white)
                     }
-                }.scrollContentBackground(.hidden)
+                }
+                .scrollContentBackground(.hidden)
+                
             }
         }
     }
