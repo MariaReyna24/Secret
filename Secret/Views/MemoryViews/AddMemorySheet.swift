@@ -8,7 +8,7 @@
 import SwiftUI
 import PhotosUI
 struct AddMemorySheet: View {
-    @State private var isShowingError = true
+    @State private var isShowingError = false
     @Environment(\.dismiss) var dismiss
     @State var memory = Memory(name: "", image: .default, description: "", date: Date.now)
     @State var selectedImage: Image?
@@ -16,7 +16,6 @@ struct AddMemorySheet: View {
     @State var selectedPhotoData: Data?
     @State var selectedPhotoURL: URL?
     @State var memoryVM: MemoryViewModel
-   
     var body: some View {
         ZStack {
             Color.clear.overlay(
@@ -31,38 +30,27 @@ struct AddMemorySheet: View {
                     .scaledToFill()
                     .frame(width: 250, height: 100)
                     .padding()
+                    .clipShape(RoundedRectangle(cornerRadius: Theme.cornerRadius))
+                    .shadow(radius: Theme.shadowRadius)
+                    .transition(.opacity.combined(with: .scale))
                 
                 PhotosPicker("Upload a photo", selection: $pickerItem, matching: .images)
                     .foregroundStyle(.white)
                     .padding()
                     .buttonStyle(.borderedProminent)
                     .tint(.black)
-                    .onChange(of: pickerItem){
-                        Task{
-                            selectedImage = try await pickerItem?.loadTransferable(type: Image.self)
-                            guard
-                                let identifer = pickerItem?.itemIdentifier,
-                                let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifer], options: nil).firstObject
-                               
-                            else {
-                                return("fail")
+                    .onChange(of: pickerItem) {
+                        Task {
+                            if let identifier = pickerItem?.itemIdentifier,
+                               let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject {
+                                memory.date = asset.creationDate ?? asset.addedDate
+                                memoryVM.addedImage.toggle()
                             }
-                            let creationDate = asset.addedDate
-                            print(creationDate)
-                            memoryVM.addedImage.toggle()
-                            memory.date = creationDate
-                           return("pass")
-                            
+
+                            selectedImage = try await pickerItem?.loadTransferable(type: Image.self)
+                            selectedPhotoData = try? await pickerItem?.loadTransferable(type: Data.self)
+                            selectedPhotoURL = try? await pickerItem?.loadTransferable(type: URL.self)
                         }
-                    }
-                    .task(id: pickerItem){
-                        if let data = try? await pickerItem?.loadTransferable(type: Data.self){
-                            selectedPhotoData = data
-                        }
-                        if let url = try? await pickerItem?.loadTransferable(type: URL.self){
-                            selectedPhotoURL = url
-                        }
-                        
                     }
                 
                 Group{
@@ -78,18 +66,19 @@ struct AddMemorySheet: View {
 //                }
                 Button {
                     addMemory()
-                    dismiss()
                     memoryVM.isShowingWaitingScreen.toggle()
                 }label: {
                     Text("Add Memory")
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.black)
-                .disabled(memory.name == "" && memory.description == "")
+                .disabled(memory.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
 
-            }.onAppear {
+            }
+            .onAppear {
                 memoryVM.photoAuthorization()
             }
+            .animation(.easeInOut(duration: 0.4), value: selectedImage != nil)
         }
     }
     func addMemory(){

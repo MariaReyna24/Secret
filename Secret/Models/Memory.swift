@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import UIKit
+
 struct Memory: Identifiable, Hashable {
     var id: String
     var name: String
@@ -25,12 +26,13 @@ struct Memory: Identifiable, Hashable {
     }
 
     static func == (lhs: Memory, rhs: Memory) -> Bool {
-        lhs.id == rhs.id && lhs.name == rhs.name && lhs.description == rhs.description
+        lhs.id == rhs.id && lhs.name == rhs.name && lhs.description == rhs.description && lhs.date == rhs.date
     }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
         hasher.combine(name)
         hasher.combine(description)
+        hasher.combine(date)
     }
 }

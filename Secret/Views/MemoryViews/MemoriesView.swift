@@ -11,6 +11,7 @@ struct MemoriesView: View {
     let columns = [
         GridItem(.adaptive(minimum: 100))
     ]
+    @State var currentIndex: IndexSet?
     @State var isShowingSheet = false
     @Environment(Router.self) var router
     @State var memoryvm: MemoryViewModel
@@ -48,7 +49,10 @@ struct MemoriesView: View {
                                             .border(.white, width: 4)
                                             .padding()
                                     }
-                                }.foregroundStyle(.white)
+                                }.onDelete(perform: { index in
+                                    currentIndex = index
+                                })
+                                .foregroundStyle(.white)
                             }
                            
                         }
@@ -79,8 +83,19 @@ struct MemoriesView: View {
                     } label: {
                         Text("Retry")
                     }
+                    
                 }
                 
+            }
+            
+        }
+        
+    }
+    func deleteOff(indes: IndexSet){
+        for index in indes {
+            let offense = memoryvm.listOfMemories[index]
+            Task {
+                try await memoryvm.delete(offense)
             }
         }
     }

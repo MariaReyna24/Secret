@@ -25,15 +25,23 @@ struct MemoryDetailView: View {
                 Image(uiImage: memory.image ?? .default)
                     .resizable()
                     .scaledToFit()
+                    .padding()
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.forestGreen, lineWidth: 4)
+                    )
+                    .shadow(radius: 8)
                 Text(memory.description)
                     .font(.title)
                     .padding()
                     .foregroundStyle(.cream)
-                Text(memory.date.formatted())
+                Text(memory.date.formatted(date: .numeric, time: .complete))
                     .font(.title)
                     .padding()
                     .foregroundStyle(.cream)
             }
+            .animation(.easeInOut(duration: 0.4), value: memory.name)
         }
     }
 }
@@ -42,3 +50,4 @@ struct MemoryDetailView: View {
     MemoryDetailView(memory: Memory(name: "Placeholder", image: .default, description: "This is my placeholder text", date: Date.now))
     
 }
+

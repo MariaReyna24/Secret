@@ -29,8 +29,8 @@ struct SelectMusic: View {
                 List {
                     ForEach(audioManager.AudioFiles) { file in
                         Button{
-                            router.navigateTo(route: .mainView)
                             audioManager.currentSong = file
+                            router.navigateTo(route: .mainView)
                         } label: {
                             HStack{
                                 Text(file.songTitle)

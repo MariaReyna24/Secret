@@ -8,16 +8,22 @@
 import SwiftUI
 import Combine
 
+#if os(iOS)
+import UIKit
+private func lightTap() { UIImpactFeedbackGenerator(style: .light).impactOccurred() }
+#else
+private func lightTap() {}
+#endif
+
 
 struct ContentView: View {
     @Environment(Router.self) var router
     @State var rotation = 0.0
-    @State var isShowingText = false
     @State var scale = 1.0
     @State var isShowingBackground = false
     @State var isRotating = false
     @State var audioManager: AudioPlayerManager
-    let timer = Timer.publish(every: 1.0 / 60.0, on: .main, in: .common).autoconnect()
+
     var body: some View {
         ZStack {
             LinearGradient(
@@ -38,36 +44,42 @@ struct ContentView: View {
                 Button {
                     if isRotating == false {
                         isRotating = true
+                        lightTap()
                         audioManager.playAudio(track: audioManager.currentSong)
-                        withAnimation(.linear(duration: 2.0)) {
-                            isShowingText.toggle()
+                        withAnimation(.easeInOut(duration: 0.6)) {
                             isShowingBackground.toggle()
                         }
                     } else if isRotating == true {
-                        withAnimation(.easeIn(duration: 1)) {
-                            isRotating = false
-                            audioManager.pauseSound()
-                            isShowingText.toggle()
+                        isRotating = false
+                        lightTap()
+                        withAnimation(.easeInOut(duration: 0.6)) {
                             isShowingBackground.toggle()
                         }
+                        audioManager.pauseSound()
                     }
                 } label: {
                     Image(audioManager.currentSong.recordImage)
                         .resizable()
                         .scaledToFit()
-                        .rotationEffect(.degrees(rotation))
-                        .onReceive(timer) { _ in
-                            if isRotating {
-                                rotation += 1.5
-                                if rotation >= 360 { rotation -= 360 }
-                            }
-                        }
+                        .rotationEffect(.degrees(isRotating ? 360 : 0))
+                        .animation(isRotating ? .linear(duration: 6).repeatForever(autoreverses: false) : .default, value: isRotating)
+                        .scaleEffect(isRotating ? 1.03 : 1.0)
+                        .shadow(radius: 8)
                 }
-                withAnimation(.easeIn(duration: 1)) {
-                    Image(isShowingBackground ? .background : .kitty )
-                        .resizable()
-                        .scaledToFit()
+                ZStack {
+                    if isShowingBackground {
+                        Image(.background)
+                            .resizable()
+                            .scaledToFit()
+                            .transition(.opacity.combined(with: .scale))
+                    } else {
+                        Image(.kitty)
+                            .resizable()
+                            .scaledToFit()
+                            .transition(.opacity.combined(with: .scale))
+                    }
                 }
+                .animation(.easeInOut(duration: 0.6), value: isShowingBackground)
             }.onDisappear {
                 audioManager.stopSound()
             }
